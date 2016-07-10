@@ -1,0 +1,7 @@
+*.pdf
+.classpath
+.project
+.settings
+target
+
+
