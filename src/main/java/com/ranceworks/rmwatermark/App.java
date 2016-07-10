@@ -32,10 +32,13 @@ public class App {
 		final PdfReader reader = new PdfReader(getClass().getResourceAsStream("test.pdf"));
 		HashMap<String, String> a = reader.getInfo();
 		a.clear();
-		PdfDictionary dic = reader.getPageN(1);
 
-		PdfArray array = (PdfArray) dic.get(PdfName.CONTENTS);
-		array.remove(array.size() - 1);
+		for (int p = 1; p <= reader.getNumberOfPages(); p++) {
+			PdfDictionary dic = reader.getPageN(p);
+			System.out.println(p);
+			cln(dic);
+		}
+
 		// visit(dic);
 		Document document = new Document();
 		PdfCopy copy = new PdfCopy(document, new FileOutputStream("hoge.pdf"));
@@ -43,6 +46,20 @@ public class App {
 		copy.addDocument(reader);
 		document.close();
 		reader.close();
+	}
+
+	private void cln(PdfDictionary dic) {
+		PdfArray array = (PdfArray) dic.get(PdfName.CONTENTS);
+		if (array.size() > 0) {
+			array.remove(array.size() - 1);
+		}
+		PdfArray arrayA = (PdfArray) dic.getDirectObject(PdfName.ANNOTS);
+		// PdfArray arrayA = (PdfArray) dic.get(PdfName.ANNOTS);
+		if (arrayA.size() > 0) {
+			PdfObject aObject = arrayA.getDirectObject(arrayA.size() - 1);
+			arrayA.remove(arrayA.size() - 1);
+		}
+
 	}
 
 	private void visit(final PdfDictionary dic) {
